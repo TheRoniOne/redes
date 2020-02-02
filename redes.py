@@ -11,9 +11,10 @@ class router:
         pass
 
 def leerCSV():
-    matriz = numpy.loadtxt(open("adyacencia.csv", "rb"), delimiter=",", skiprows=1)
+    matriz = numpy.loadtxt(open("adyacencia.csv", "rb"), delimiter=",")
     matriz = matriz.astype(int)
     print(matriz)
+    print(len(matriz))
 
 def main():
     leerCSV()
