@@ -1,4 +1,4 @@
-import csv
+import csv, numpy
 
 class router:
     def __init__(self, nombre, ip):
@@ -11,10 +11,11 @@ class router:
         pass
 
 def leerCSV():
-    pass
+    matriz = numpy.loadtxt(open("adyacencia.csv", "rb"), delimiter=",", skiprows=1)
+    print(matriz)
 
 def main():
-    pass
+    leerCSV()
 
 if __name__ == '__main__':
     main()
