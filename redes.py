@@ -1,10 +1,10 @@
-import csv, numpy
+import numpy
 
-class router:
-    def __init__(self, nombre, ip):
+class Router:
+    def __init__(self, nombre):
         self.nombre = nombre
-        self.ip = ip
         self.area = 1
+        self.vecinos = []
         self.conocidos = []
 
     def anunciarVecinos(self):
@@ -13,11 +13,18 @@ class router:
 def leerCSV():
     matriz = numpy.loadtxt(open("adyacencia.csv", "rb"), delimiter=",")
     matriz = matriz.astype(int)
-    print(matriz)
-    print(len(matriz))
+    return matriz
+
+def crearRouters(numRouters):
+    routers = []
+    for i in range(numRouters):
+        router = Router("Router {}".format(i+1))
+        routers.append(router)
+    return routers
 
 def main():
-    leerCSV()
+    matrizAdyacencia = leerCSV()
+    routers = crearRouters(len(matrizAdyacencia))
 
 if __name__ == '__main__':
     main()
