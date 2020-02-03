@@ -12,14 +12,16 @@ class Router:
 
     def enviarLSP(self, routers):
         miLSP = [(self.id, self.vecinos)]
+        print("Mensaje LSP creado", miLSP)
         self.paquetesLSP.append(miLSP)
         for i in range(len(self.vecinos)):
-            #print(self.vecinos[i][0])
+            print("Enviando mensaje LSP a Router {}".format(self.vecinos[i][0] + 1))
             routers[self.vecinos[i][0]].recibirLSP(self.id, miLSP, routers)
 
     def recibirLSP(self, origen, msjLSP, routers):
         if (msjLSP not in self.paquetesLSP): #no reevies ni guardes el msjLSP si ya lo tenias
             self.paquetesLSP.append(msjLSP)
+            print("Mensaje LSP recibido y guardado", msjLSP)
             self.reenviarLSP(origen, msjLSP, routers)
 
     def reenviarLSP(self, origen, msjLSP, routers):
@@ -27,10 +29,11 @@ class Router:
             #print(self.vecinos[i][0])
             if (self.vecinos[i][0] != origen): #no reenvies el msjLSP por donde te llego
                 routers[self.vecinos[i][0]].recibirLSP(self.id, msjLSP, routers)
+                print("Mensaje LSP reenviado a Router {}".format(self.vecinos[i][0] + 1))
 
     def calcularRutas(self): #todo
         while (True):
-            ruta = Ruta(self, )
+            ruta = Ruta(self)
 
 class Ruta:
     def __init__(self, raiz, destino):
@@ -62,8 +65,9 @@ def main():
     routers = crearRouters(matrizAdyacencia)
     #print(routers[0].vecinos)
     #routers[0].enviarLSP(routers)
-    """for router in routers:
-        router.enviarLSP()"""
+    #routers[0].enviarLSP(routers)
+    for router in routers:
+        router.enviarLSP(routers)
 
 if __name__ == '__main__':
     main()
