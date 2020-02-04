@@ -7,6 +7,7 @@ class Router:
         self.area = 1
         self.vecinos = []
         self.recorridos = []
+        self.conocidos = []
         self.rutas = []
         self.paquetesLSP = []
 
@@ -36,16 +37,36 @@ class Router:
             if (paquete[0] == id):
                 return paquete
 
+    def buscarRuta(self, destino):
+        for ruta in self.rutas:
+            if (ruta.destino == destino)
+                return ruta
+
     def calcularRutas(self): #todo
         for i in range(len(self.paquetesLSP)):
             if (i == 0):
                 for vecino in self.vecinos:
                     ruta = Ruta(self.id, vecino[0])
-                    ruta.calcDist(0, vecino[1])
+                    ruta.distancias.append(vecino[1])
                     self.rutas.append(ruta)
-                    self.recorridos.append(self.id)
+                    self.conocidos.append(vecino[0])
+                self.recorridos.append(self.id)
             else:
-                pass
+                for ruta in self.rutas:
+                    if (ruta.destino not in self.recorridos):
+                        msjLSP = self.buscarLSP(ruta.destino)
+                        for vecino in msjLSP[1]:
+                            if (vecino[0] != self.id):
+                                rutaNueva = ruta
+                                rutaNueva.destino = vecino[0]
+                                rutaNueva.recorrido.append(ruta.destino, rutaNueva.destino)
+                                rutaNueva.distancias.append(ruta.distancias[-1] + vecino[1])
+                                if (vecino[0] not in self.conocidos):
+                                    self.rutas.append(rutaNueva)
+                                    self.conocidos.append(vecino[0])
+                                elif (rutaNueva.distancias[-1] < self.buscarRuta(vecino[0]).distancias[-1]):
+                                    self.rutas[self.rutas.index(self.buscarRuta(vecino[0]))] = rutaNueva
+                        self.recorridos.append(ruta.destino)
 
 class Ruta:
     def __init__(self, raiz, destino):
@@ -53,12 +74,6 @@ class Ruta:
         self.destino = destino
         self.recorrido = [(self.raiz, self.destino)]
         self.distancias = []
-
-    def calcDist(self, indice, distLSP): #todo
-        if (indice == 0):
-            self.distancias.append(distLSP)
-        else:
-            pass
 
 def leerCSV():
     matriz = numpy.loadtxt(open("adyacencia.csv", "rb"), delimiter=",")
