@@ -6,12 +6,12 @@ class Router:
         self.nombre = nombre
         self.area = 1
         self.vecinos = []
-        self.conocidos = []
+        self.recorridos = []
         self.rutas = []
         self.paquetesLSP = []
 
     def enviarLSP(self, routers):
-        miLSP = [(self.id, self.vecinos)]
+        miLSP = (self.id, self.vecinos)
         print("Mensaje LSP creado", miLSP)
         self.paquetesLSP.append(miLSP)
         for i in range(len(self.vecinos)):
@@ -31,9 +31,21 @@ class Router:
                 routers[self.vecinos[i][0]].recibirLSP(self.id, msjLSP, routers)
                 print("Mensaje LSP reenviado a Router {}".format(self.vecinos[i][0] + 1))
 
+    def buscarLSP(self, id):
+        for paquete in self.paquetesLSP:
+            if (paquete[0] == id):
+                return paquete
+
     def calcularRutas(self): #todo
-        while (True):
-            ruta = Ruta(self)
+        for i in range(len(self.paquetesLSP)):
+            if (i == 0):
+                for vecino in self.vecinos:
+                    ruta = Ruta(self.id, vecino[0])
+                    ruta.calcDist(0, vecino[1])
+                    self.rutas.append(ruta)
+                    self.recorridos.append(self.id)
+            else:
+                pass
 
 class Ruta:
     def __init__(self, raiz, destino):
@@ -42,8 +54,11 @@ class Ruta:
         self.recorrido = [(self.raiz, self.destino)]
         self.distancias = []
 
-    def calcDist(self, indice, matrizAdy): #todo
-        pass
+    def calcDist(self, indice, distLSP): #todo
+        if (indice == 0):
+            self.distancias.append(distLSP)
+        else:
+            pass
 
 def leerCSV():
     matriz = numpy.loadtxt(open("adyacencia.csv", "rb"), delimiter=",")
