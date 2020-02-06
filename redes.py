@@ -12,29 +12,24 @@ class Router:
         raiz = self.id
         print("Mensaje creado", raiz)
         for i in range(len(self.vecinos)):
-            print("Enviando mensaje a Router {}".format(self.vecinos[i][0] + 1))
-            routers[self.vecinos[i][0]].recibir(self.id, raiz, 1, routers)
+            routers[self.vecinos[i]].recibir(self.id, raiz, 1, routers)
 
     def recibir(self, proxSalto, raiz, numSaltos, routers):
         if (raiz not in self.paquetes): #si no conoces la raiz guarda la ruta y reenviala
             self.paquetes.append(raiz)
             ruta = Ruta(raiz, proxSalto, numSaltos)
             self.rutas.append(ruta)
-            print("Ruta apredida hacia ", raiz + 1)
             self.reenviar(proxSalto, raiz, numSaltos + 1, routers)
         elif (numSaltos < self.buscarRuta(raiz).numSaltos):
             self.paquetes.append(raiz)
             ruta = Ruta(raiz, proxSalto, numSaltos)
             self.rutas[self.rutas.index(self.buscarRuta(raiz))] = ruta
-            print("Ruta apredida hacia ", raiz)
             self.reenviar(proxSalto, raiz, numSaltos + 1, routers)
 
     def reenviar(self, proxSalto, raiz, numSaltos, routers):
         for i in range(len(self.vecinos)):
-            #print(self.vecinos[i][0])
-            if (self.vecinos[i][0] != proxSalto) and (self.vecinos[i][0] != raiz): #no reenvies el msj por donde te llego
-                routers[self.vecinos[i][0]].recibir(self.id, raiz, numSaltos, routers)
-                print("Mensaje reenviado a Router {}".format(self.vecinos[i][0] + 1))
+            if (self.vecinos[i] != proxSalto) and (self.vecinos[i] != raiz): #no reenvies el msj por donde te llego
+                routers[self.vecinos[i]].recibir(self.id, raiz, numSaltos, routers)
 
     def buscarRuta(self, raiz):
         for ruta in self.rutas:
@@ -43,9 +38,9 @@ class Router:
 
     def mostrarRutas(self):
         print("\nMostrando rutas del {}".format(self.nombre))
+        print("Hacia:", "\t    Proximo salto:", "  Numero de saltos:")
         for ruta in self.rutas:
-            print("Hacia Router {}".format(ruta.raiz + 1), "\tProximo salto: Router {} ".format(ruta.proxSalto + 1),
-                  "\tNumero de saltos: {}".format(ruta.numSaltos))
+            print("Router", ruta.raiz + 1, "     Router", ruta.proxSalto + 1, "           ", ruta.numSaltos)
 
 class Ruta:
     def __init__(self, raiz, proxSalto, numSaltos):
@@ -53,24 +48,23 @@ class Ruta:
         self.proxSalto = proxSalto
         self.numSaltos = numSaltos
 
-def leerCSV():
-    matriz = numpy.loadtxt(open("adyacencia.csv", "rb"), delimiter=",")
-    matriz = matriz.astype(int)
-    return matriz
-
-def crearRouters(matriz):
+def crearRouters():
     routers = []
-    for i in range(len(matriz)):
-        router = Router("Router {}".format(i+1), i)
-        for j in range(len(matriz)):
-            if (matriz[i][j] != -1):
-                router.vecinos.append((j, matriz[i][j]))
+    numRouters = int(input("Ingrese el numero de routers en la topologia: "))
+    for i in range(numRouters):
+        print("\nConfigurando Router ", i + 1)
+        router = Router("Router {}".format(i + 1), i)
+        for j in range(numRouters):
+            if (i != j):
+                valor = input("Si Router {} es vecino de Router {}, ingrese 1, caso contrario ingrese 0: ".format(i + 1,
+                                                                                                                j + 1))
+                if (int(valor) == 1):
+                    router.vecinos.append(j)
         routers.append(router)
     return routers
 
 def main():
-    matrizAdyacencia = leerCSV()
-    routers = crearRouters(matrizAdyacencia)
+    routers = crearRouters()
     for router in routers:
         router.enviar(routers)
 
