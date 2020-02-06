@@ -9,71 +9,47 @@ class Router:
         self.recorridos = []
         self.conocidos = []
         self.rutas = []
-        self.paquetesLSP = []
+        self.paquetes = []
 
-    def enviarLSP(self, routers):
-        miLSP = (self.id, self.vecinos)
-        print("Mensaje LSP creado", miLSP)
-        self.paquetesLSP.append(miLSP)
+    def enviar(self, routers):
+        raiz = self.id
+        print("Mensaje creado", miMsj)
+        self.paquetes.append(miMsj)
         for i in range(len(self.vecinos)):
-            print("Enviando mensaje LSP a Router {}".format(self.vecinos[i][0] + 1))
-            routers[self.vecinos[i][0]].recibirLSP(self.id, miLSP, routers)
+            print("Enviando mensaje a Router {}".format(self.vecinos[i][0] + 1))
+            routers[self.vecinos[i][0]].recibir(self.id, raiz, 1, routers)
 
-    def recibirLSP(self, origen, msjLSP, routers):
-        if (msjLSP not in self.paquetesLSP): #no reevies ni guardes el msjLSP si ya lo tenias
-            self.paquetesLSP.append(msjLSP)
-            print("Mensaje LSP recibido y guardado", msjLSP)
-            self.reenviarLSP(origen, msjLSP, routers)
+    def recibir(self, proxSalto, raiz, numSaltos, routers):
+        if (raiz not in self.paquetes): #si no conoces la raiz guarda la ruta y reenviala
+            self.paquetes.append(raiz)
+            ruta = Ruta(raiz, proxSalto, numSaltos)
+            self.rutas.append(ruta)
+            print("Ruta apredida hacia ", raiz)
+            self.reenviar(proxSalto, raiz, numSaltos + 1, routers)
+        elif (numSaltos < self.buscarRuta(raiz).numSaltos):
+            self.paquetes.append(raiz)
+            ruta = Ruta(raiz, proxSalto, numSaltos)
+            self.rutas.append(ruta)
+            print("Ruta apredida hacia ", raiz)
+            self.reenviar(proxSalto, raiz, numSaltos + 1, routers)
 
-    def reenviarLSP(self, origen, msjLSP, routers):
+    def reenviar(self, proxSalto, raiz, numSaltos, routers):
         for i in range(len(self.vecinos)):
             #print(self.vecinos[i][0])
-            if (self.vecinos[i][0] != origen): #no reenvies el msjLSP por donde te llego
-                routers[self.vecinos[i][0]].recibirLSP(self.id, msjLSP, routers)
-                print("Mensaje LSP reenviado a Router {}".format(self.vecinos[i][0] + 1))
+            if (self.vecinos[i][0] != proxSalto): #no reenvies el msj por donde te llego
+                routers[self.vecinos[i][0]].recibir(self.id, raiz, numSaltos, routers)
+                print("Mensaje reenviado a Router {}".format(self.vecinos[i][0] + 1))
 
-    def buscarLSP(self, id):
-        for paquete in self.paquetesLSP:
-            if (paquete[0] == id):
-                return paquete
-
-    def buscarRuta(self, destino):
+    def buscarRuta(self, raiz):
         for ruta in self.rutas:
-            if (ruta.destino == destino)
+            if (ruta.raiz == raiz)
                 return ruta
 
-    def calcularRutas(self): #todo
-        for i in range(len(self.paquetesLSP)):
-            if (i == 0):
-                for vecino in self.vecinos:
-                    ruta = Ruta(self.id, vecino[0])
-                    ruta.distancias.append(vecino[1])
-                    self.rutas.append(ruta)
-                    self.conocidos.append(vecino[0])
-                self.recorridos.append(self.id)
-            else:
-                for ruta in self.rutas:
-                    if (ruta.destino not in self.recorridos):
-                        msjLSP = self.buscarLSP(ruta.destino)
-                        for vecino in msjLSP[1]:
-                            if (vecino[0] != self.id):
-                                rutaNueva = ruta
-                                rutaNueva.destino = vecino[0]
-                                rutaNueva.recorrido.append(ruta.destino, rutaNueva.destino)
-                                rutaNueva.distancias.append(ruta.distancias[-1] + vecino[1])
-                                if (vecino[0] not in self.conocidos):
-                                    self.rutas.append(rutaNueva)
-                                    self.conocidos.append(vecino[0])
-                                elif (rutaNueva.distancias[-1] < self.buscarRuta(vecino[0]).distancias[-1]):
-                                    self.rutas[self.rutas.index(self.buscarRuta(vecino[0]))] = rutaNueva
-                        self.recorridos.append(ruta.destino)
-
 class Ruta:
-    def __init__(self, raiz, destino):
+    def __init__(self, raiz, proxSalto, numSaltos):
         self.raiz = raiz
-        self.destino = destino
-        self.recorrido = [(self.raiz, self.destino)]
-        self.distancias = []
+        self.proxSalto = proxSalto
+        self.numSaltos = numSaltos
 
 def leerCSV():
     matriz = numpy.loadtxt(open("adyacencia.csv", "rb"), delimiter=",")
@@ -94,10 +70,10 @@ def main():
     matrizAdyacencia = leerCSV()
     routers = crearRouters(matrizAdyacencia)
     #print(routers[0].vecinos)
-    #routers[0].enviarLSP(routers)
-    #routers[0].enviarLSP(routers)
+    #routers[0].enviar(routers)
+    #routers[0].enviar(routers)
     for router in routers:
-        router.enviarLSP(routers)
+        router.enviar(routers)
 
 if __name__ == '__main__':
     main()
