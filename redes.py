@@ -20,12 +20,12 @@ class Router:
             self.paquetes.append(raiz)
             ruta = Ruta(raiz, proxSalto, numSaltos)
             self.rutas.append(ruta)
-            print("Ruta apredida hacia ", raiz)
+            print("Ruta apredida hacia ", raiz + 1)
             self.reenviar(proxSalto, raiz, numSaltos + 1, routers)
         elif (numSaltos < self.buscarRuta(raiz).numSaltos):
             self.paquetes.append(raiz)
             ruta = Ruta(raiz, proxSalto, numSaltos)
-            self.rutas.append(ruta)
+            self.rutas[self.rutas.index(self.buscarRuta(raiz))] = ruta
             print("Ruta apredida hacia ", raiz)
             self.reenviar(proxSalto, raiz, numSaltos + 1, routers)
 
@@ -38,13 +38,13 @@ class Router:
 
     def buscarRuta(self, raiz):
         for ruta in self.rutas:
-            if (ruta.raiz == raiz)
+            if (ruta.raiz == raiz):
                 return ruta
 
     def mostrarRutas(self):
-        print("Mostrando rutas del {}".format(self.nombre))
+        print("\nMostrando rutas del {}".format(self.nombre))
         for ruta in self.rutas:
-            print("Hacia {}".format(ruta.raiz), "\tProximo salto: {} ".format(ruta.proxSalto),
+            print("Hacia Router {}".format(ruta.raiz + 1), "\tProximo salto: Router {} ".format(ruta.proxSalto + 1),
                   "\tNumero de saltos: {}".format(ruta.numSaltos))
 
 class Ruta:
@@ -71,9 +71,6 @@ def crearRouters(matriz):
 def main():
     matrizAdyacencia = leerCSV()
     routers = crearRouters(matrizAdyacencia)
-    #print(routers[0].vecinos)
-    #routers[0].enviar(routers)
-    #routers[0].enviar(routers)
     for router in routers:
         router.enviar(routers)
 
