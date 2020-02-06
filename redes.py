@@ -13,8 +13,7 @@ class Router:
 
     def enviar(self, routers):
         raiz = self.id
-        print("Mensaje creado", miMsj)
-        self.paquetes.append(miMsj)
+        print("Mensaje creado", raiz)
         for i in range(len(self.vecinos)):
             print("Enviando mensaje a Router {}".format(self.vecinos[i][0] + 1))
             routers[self.vecinos[i][0]].recibir(self.id, raiz, 1, routers)
@@ -36,7 +35,7 @@ class Router:
     def reenviar(self, proxSalto, raiz, numSaltos, routers):
         for i in range(len(self.vecinos)):
             #print(self.vecinos[i][0])
-            if (self.vecinos[i][0] != proxSalto): #no reenvies el msj por donde te llego
+            if (self.vecinos[i][0] != proxSalto) and (self.vecinos[i][0] != raiz): #no reenvies el msj por donde te llego
                 routers[self.vecinos[i][0]].recibir(self.id, raiz, numSaltos, routers)
                 print("Mensaje reenviado a Router {}".format(self.vecinos[i][0] + 1))
 
@@ -44,6 +43,12 @@ class Router:
         for ruta in self.rutas:
             if (ruta.raiz == raiz)
                 return ruta
+
+    def mostrarRutas(self):
+        print("Mostrando rutas del {}".format(self.nombre))
+        for ruta in self.rutas:
+            print("Hacia {}".format(ruta.raiz), "\tProximo salto: {} ".format(ruta.proxSalto),
+                  "\tNumero de saltos: {}".format(ruta.numSaltos))
 
 class Ruta:
     def __init__(self, raiz, proxSalto, numSaltos):
@@ -74,6 +79,9 @@ def main():
     #routers[0].enviar(routers)
     for router in routers:
         router.enviar(routers)
+
+    for router in routers:
+        router.mostrarRutas()
 
 if __name__ == '__main__':
     main()
