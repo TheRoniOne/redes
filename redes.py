@@ -4,10 +4,7 @@ class Router:
     def __init__(self, nombre, ID):
         self.id = ID
         self.nombre = nombre
-        self.area = 1
         self.vecinos = []
-        self.recorridos = []
-        self.conocidos = []
         self.rutas = []
         self.paquetes = []
 
