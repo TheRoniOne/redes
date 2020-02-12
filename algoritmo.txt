@@ -1,0 +1,51 @@
+Algoritmo "enviar"
+Entrada: routers
+
+Inicio
+	raiz <- this.raiz
+	
+	Para i de 0 a len(this.vecinos):
+		routers[this.vecinos[i]].recibir(this.id, raiz, 1, routers)
+	Fin del Para
+Fin
+
+
+Algoritmo "recibir"
+Entrada: proxSalto, raiz, numSaltos, routers
+
+Inicio
+	Si raiz no esta en this.paquetes:
+		this.paquetes.añadir(raiz)
+		ruta <- Ruta(raiz, proxSalto, numSaltos)
+		this.rutas.añadir(ruta)
+		this.reenviar(proxSalto, raiz, numSaltos +1, routers)
+	Si no Si (numSaltos < this.buscarRuta(raiz).numSaltos):
+		this.paquetes.añadir(raiz)
+		ruta = Ruta(raiz, proxSalto, numSaltos)
+		this.rutas[self.rutas.index(this.buscarRuta(raiz))] <- ruta
+		this.reenviar(proxSalto, raiz, numSaltos + 1, routers)
+	Fin del Si
+Fin
+
+
+Algoritmo "reenviar"
+Entrada: proxSalto, raiz, numSaltos, routers
+
+Inicio
+	Para i de 0 a len(this.vecinos):
+		Si (this.vecinos[i] != proxSalto) y (this.vecinos[i] != raiz):
+			routers[this.vecinos[i].recibir(this.id, raiz, numSaltos, routers)]
+		Fin del Si
+	Fin del Para
+Fin
+
+
+Algoritmo "buscarRuta"
+Entrada: raiz
+
+Inicio
+	Para ruta en this.rutas:
+		Si ruta.raiz == raiz:
+			devuelve ruta
+		Fin del Si
+Fin
