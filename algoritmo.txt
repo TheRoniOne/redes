@@ -20,7 +20,6 @@ Inicio
 		this.rutas.añadir(ruta)
 		this.reenviar(proxSalto, raiz, numSaltos +1, routers)
 	Si no Si (numSaltos < this.buscarRuta(raiz).numSaltos):
-		this.paquetes.añadir(raiz)
 		ruta = Ruta(raiz, proxSalto, numSaltos)
 		this.rutas[self.rutas.index(this.buscarRuta(raiz))] <- ruta
 		this.reenviar(proxSalto, raiz, numSaltos + 1, routers)

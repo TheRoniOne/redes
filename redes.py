@@ -1,5 +1,3 @@
-import numpy
-
 class Router:
     def __init__(self, nombre, ID):
         self.id = ID
@@ -21,7 +19,6 @@ class Router:
             self.rutas.append(ruta)
             self.reenviar(proxSalto, raiz, numSaltos + 1, routers)
         elif (numSaltos < self.buscarRuta(raiz).numSaltos):
-            self.paquetes.append(raiz)
             ruta = Ruta(raiz, proxSalto, numSaltos)
             self.rutas[self.rutas.index(self.buscarRuta(raiz))] = ruta
             self.reenviar(proxSalto, raiz, numSaltos + 1, routers)
